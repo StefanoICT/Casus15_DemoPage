@@ -64,7 +64,7 @@ namespace Face_demo
         // Displays the image and calls UploadAndDetectFaces.
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public static async Task<int> FaceOrient() {
+        public static async Task<facesLooking> FaceOrient() {
             if (Uri.IsWellFormedUriString("https://faceidoriantation.cognitiveservices.azure.com/", UriKind.Absolute)) {
                 faceClient.Endpoint = "https://faceidoriantation.cognitiveservices.azure.com/";
             }
@@ -86,67 +86,69 @@ namespace Face_demo
             // Call the Face API.
             try {
                 using (Stream imageFileStream = File.OpenRead("D:\\programming\\Face\\website\\Face demo\\Image\\image.jpg")) {
-                    // The second argument specifies to return the faceId, while
-                    // the third argument specifies not to return face landmarks.
+                            //C:\\Users\Stefano\source\repos\Casus15_DemoPage\Face demo\Image\image.jpg
+                            // The second argument specifies to return the faceId, while
+                            // the third argument specifies not to return face landmarks.
 
-                    faceList =
-                        await faceClient.Face.DetectWithStreamAsync(
-                            imageFileStream, true, false, faceAttributes).ConfigureAwait(false);
-
-
-                }
-            }
-            // Catch and display Face API errors.
-            catch (APIErrorException f) {
-                Console.WriteLine(f.Message);
-                /*return*/ new List<DetectedFace>();
-            }
-            // Catch and display all other errors.
-            catch (Exception e) {
-                Console.WriteLine(e.Message, "Error");
-                //return new List<DetectedFace>();
-            }
-        
-                if (faceList.Count > 0) {
-                    int lookingAtBoard = 0;
-                    for (int i = 0; i < faceList.Count; ++i) {
-                        DetectedFace face = faceList[i];
-                        // Store the face description.
-                        //faceDescriptions[i] = FaceDescription(face);
-
-                    var Pitch = face.FaceAttributes.HeadPose.Pitch;
-                    var Yaw = face.FaceAttributes.HeadPose.Yaw;
-                    //var Roll = face.FaceAttributes.HeadPose.Roll;
+                            faceList =
+                                await faceClient.Face.DetectWithStreamAsync(
+                                    imageFileStream, true, false, faceAttributes).ConfigureAwait(false);
 
 
-                    Point vec = new Point(Convert.ToInt32(Yaw), Convert.ToInt32(Pitch));
-                    //line.lineLineIntersection();
-
-                    // Create points that define line.
-                    Point point1 = new Point(face.FaceRectangle.Left + (face.FaceRectangle.Width / 2), face.FaceRectangle.Top + (face.FaceRectangle.Height / 2));
-                        Point point2 = new Point(face.FaceRectangle.Left + vec.X * 100, face.FaceRectangle.Top + vec.Y * 100);
-                        //int lookingToBoard = 0;
-                        if (point2.X > 0 ) {
-                            Console.WriteLine("person is looking at screen");
-                            lookingAtBoard++;
                         }
-                        else {
-                            Console.WriteLine("NO");
-                        }
-
                     }
-                    return lookingAtBoard;
+                    // Catch and display Face API errors.
+                    catch (APIErrorException f) {
+                        Console.WriteLine(f.Message);
+                        /*return*/
+                        new List<DetectedFace>();
+                    }
+                    // Catch and display all other errors.
+                    catch (Exception e) {
+                        Console.WriteLine(e.Message, "Error");
+                        //return new List<DetectedFace>();
+                    }
+            var faces = new facesLooking();
+            faces.totalFaces = faceList.Count;
+                    if (faceList.Count > 0) {
+                        for (int i = 0; i < faceList.Count; ++i) {
+                            DetectedFace face = faceList[i];
+                            // Store the face description.
+                            //faceDescriptions[i] = FaceDescription(face);
+
+                            var Pitch = face.FaceAttributes.HeadPose.Pitch;
+                            var Yaw = face.FaceAttributes.HeadPose.Yaw;
+                            //var Roll = face.FaceAttributes.HeadPose.Roll;
+
+
+                            Point vec = new Point(Convert.ToInt32(Yaw), Convert.ToInt32(Pitch));
+                            //line.lineLineIntersection();
+
+                            // Create points that define line.
+                            Point point1 = new Point(face.FaceRectangle.Left + (face.FaceRectangle.Width / 2), face.FaceRectangle.Top + (face.FaceRectangle.Height / 2));
+                            Point point2 = new Point(face.FaceRectangle.Left + vec.X * 100, face.FaceRectangle.Top + vec.Y * 100);
+                            //int lookingToBoard = 0;
+                            if (point2.Y < 0) {
+                                Console.WriteLine("person is looking at screen");
+                                faces.LookingAtScreen++;
+                            }
+                            else {
+                                Console.WriteLine("NO");
+                            }
+
+                        }
+                        return faces;
+                    }
+                    return null;
+                    // </snippet_browsebuttonclick_mid>
+                    // <snippet_browsebuttonclick_end>
                 }
-                return 0;
-                // </snippet_browsebuttonclick_mid>
-                // <snippet_browsebuttonclick_end>
-            }
-            // </snippet_browsebuttonclick_end>
+                // </snippet_browsebuttonclick_end>
 
-            // <snippet_mousemove_start>
-            // Displays the face description when the mouse is over a face rectangle.
+                // <snippet_mousemove_start>
+                // Displays the face description when the mouse is over a face rectangle.
 
-            private static async Task<IList<DetectedFace>> UploadAndDetectFaces(string imageFilePath) {
+                private static async Task<IList<DetectedFace>> UploadAndDetectFaces(string imageFilePath) {
             IList<DetectedFace> faceList;
                 // The list of Face attributes to return.
                 IList<FaceAttributeType> faceAttributes =
@@ -256,4 +258,18 @@ namespace Face_demo
             
         }
     }
+    public class facesLooking
+    {
+        public int totalFaces;
+        public int LookingAtScreen;
+
+        public facesLooking(int faces, int looking) {
+            this.totalFaces = faces;
+            this.LookingAtScreen = looking;
+        }
+        public facesLooking() {
+        }
+
+    }
+
 }

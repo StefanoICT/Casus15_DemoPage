@@ -1,9 +1,10 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Face_demo._Default" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
     function FaceOrient() {
-        console.log("function");
+        var overAllData = null;
         var pageUrl = '<%= ResolveUrl ("~/default.aspx/FaceOrient")%>';
         $.ajax({
             type: 'POST',
@@ -24,25 +25,63 @@
                 console.log(data)
             }
         });
-        
+
         function onSuccess(data) {
             //document.write("SUCCES!!");
-            data = $.parseJSON(data);
-            alert(data.d.result);
+            alert(data.d.Result["LookingAtScreen"]);
+            overAllData = data;
+            google.charts.load("current", { packages: ["corechart"] });
+            google.charts.setOnLoadCallback(drawChart);
+           
+    }
+        function drawChart() {
+
+            //Met deze variabele word de pie chart verdeeld, deze variabele moeten overeenkomen met die van de server
+            //var Teacher = 2;
+            var Smartboard = overAllData.d.Result["LookingAtScreen"];
+            //var Laptop = 2;
+            var Overig = (overAllData.d.Result["totalFaces"] - overAllData.d.Result["LookingAtScreen"]);
+            //total = totalFaces  en gezichten = LookingAtScreen
+
+            var data = google.visualization.arrayToDataTable([
+                ['Task', 'Hours per Day'],
+                //['Docent', Teacher],
+                //['Laptop', Laptop],
+                ['SmartBoard', Smartboard],
+                ['Overig', Overig]
+            ]);
+
+            var options = {
+                title: 'Concentratie verdeling',
+                is3D: true,
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+            chart.draw(data, options);
         }
     }
-
     $('document').ready(function () {
         FaceOrient();
     });
+
+   
 </script>
+    
+
     <div class="jumbotron">
                     <p runat="server" id="faceCounter"></p>
-        <h1>ASP.NET</h1>
+        <h1>Home</h1>
         <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
         <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
         <asp:Image ID="Image1" runat="server" ImageUrl="~/Image/image.jpg" />
+        <h2> Diagram:</h2>
+
+        <script type="text/javascript">
+            
+    </script>
     </div>
+
+    <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
 
     <div class="row">
         <div class="col-md-4">
@@ -73,6 +112,9 @@
                 <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301950">Learn more &raquo;</a>
             </p>
         </div>
+    </div>
+
+    <div class PieModel>
     </div>
 
 </asp:Content>
