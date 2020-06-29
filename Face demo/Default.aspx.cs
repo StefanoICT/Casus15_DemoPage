@@ -65,6 +65,10 @@ namespace Face_demo
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static async Task<int> FaceOrient() {
+            //C:\Users\Stefano\source\repos\Casus15_DemoPage\Face demo\Image\image.jpg
+            //C:\\Users\\Stefano\\source\\repos\\Casus15_DemoPage\\Face demo\\Image\\image.jpg
+            
+            string picturePath = ("C:\\Users\\Stefano\\source\\repos\\Casus15_DemoPage\\Face_demo\\Image\\image.jpg");
             if (Uri.IsWellFormedUriString("https://faceidoriantation.cognitiveservices.azure.com/", UriKind.Absolute)) {
                 faceClient.Endpoint = "https://faceidoriantation.cognitiveservices.azure.com/";
             }
@@ -85,7 +89,9 @@ namespace Face_demo
                 };
             // Call the Face API.
             try {
-                using (Stream imageFileStream = File.OpenRead("D:\\programming\\Face\\website\\Face demo\\Image\\image.jpg")) {
+                using (Stream imageFileStream = File.OpenRead(picturePath))
+                {
+                    //C:\\Users\Stefano\source\repos\Casus15_DemoPage\Face demo\Image\image.jpg
                     // The second argument specifies to return the faceId, while
                     // the third argument specifies not to return face landmarks.
 
@@ -255,5 +261,18 @@ namespace Face_demo
                 return new Point(x, y);
             
         }
+    }
+    public class facesLooking
+    {
+        public int totalFaces;
+        public int LookingAtScreen;
+
+        public facesLooking(int faces, int looking) {
+            this.totalFaces = faces;
+            this.LookingAtScreen = looking;
+        }
+        public facesLooking() {
+        }
+
     }
 }
