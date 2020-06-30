@@ -67,8 +67,18 @@ namespace Face_demo
         public static async Task<int> FaceOrient() {
             //C:\Users\Stefano\source\repos\Casus15_DemoPage\Face demo\Image\image.jpg
             //C:\\Users\\Stefano\\source\\repos\\Casus15_DemoPage\\Face demo\\Image\\image.jpg
+
+            //Maak een variabele picture
+            string UsedImage = "Image.jpg";
+
+
+            //maak een variabele User image
+            if (ImageUploadForm.UserImage == true)
+            {
+                UsedImage = "UserImage";
+            }
             
-            string picturePath = ("C:\\Users\\Stefano\\source\\repos\\Casus15_DemoPage\\Face_demo\\Image\\image.jpg");
+            string picturePath = ("C:\\Users\\Stefano\\source\\repos\\Casus15_DemoPage\\Face_demo\\Image\\" + (UsedImage));
             if (Uri.IsWellFormedUriString("https://faceidoriantation.cognitiveservices.azure.com/", UriKind.Absolute)) {
                 faceClient.Endpoint = "https://faceidoriantation.cognitiveservices.azure.com/";
             }
