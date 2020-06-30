@@ -5,25 +5,24 @@
 <script type="text/javascript">
     function FaceOrient() {
         var overAllData = null;
-        var pageUrl = '<%= ResolveUrl ("~/default.aspx/FaceOrient")%>';
+        var pageUrl = '<%= ResolveUrl ("~/Default.aspx/FaceOrient")%>';
+        console.log(pageUrl);
         $.ajax({
             type: 'POST',
             url: pageUrl,
             data: {},
             contentType: "application/json; charset=utf-8",
-            dataType: "json",
+            dataType: "Json",
             success: function (data) {
                 console.log(data);
                 onSuccess(data)
             },
             error: function (data, success, error) {
-                console.log("error");
+                console.log("error: " + error);
                 alert("ERROR : " + error)
             },
-            complete: function (data) {
-                console.log("request completed");
-                console.log(data)
-            }
+           
+            
         });
 
         function onSuccess(data) {

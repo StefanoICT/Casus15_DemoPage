@@ -27,8 +27,6 @@ namespace Face_demo
         protected void Page_Load(object sender, EventArgs e) {
 
 
-
-
             //var test = face.lookingAtBoard;
             //faceCounter.InnerText = facesCount.Result.ToString();
         }

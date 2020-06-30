@@ -15,7 +15,7 @@ namespace Face_demo
             settings.AutoRedirectMode = RedirectMode.Off;
             routes.EnableFriendlyUrls(settings);
 
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.IgnoreRoute("{*allaspx}", new { allaspx = @".*\.aspx(/.*)?" });
 
             routes.MapRoute(
                     name: "Default",
